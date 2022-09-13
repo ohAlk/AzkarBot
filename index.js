@@ -1,10 +1,11 @@
 const { MessageEmbed, Permissions, Client, Intents } = require('discord.js');
+const { readFileSync, writeFileSync } = require("fs")
 
 const client = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
-  ];
+  ]
 });
 
 // Bot Prefix
@@ -27,6 +28,7 @@ client.on("ready", () => {
 
                 let embed = new MessageEmbed()
                     .setDescription(randomZkr)
+                    .setAuthor({ name: client.user.username, iconURL: client.user.avatarURL({ dynamic: true }) })
                     .setFooter({ text: channel.guild.name, iconURL: channel.guild.iconURL({ dynamic: true }) })
                     .setColor("BLUE");
 
@@ -46,7 +48,7 @@ client.on("messageCreate", async message => {
         // the config file
         let file = JSON.parse(readFileSync("configAzkar.json"));
 
-        // funtion for replying message 
+        // funtion for replying to message 
         function returnMsg(content) {
             message.reply({ content }).catch(e => console.log("ERR: " + e))
         }
@@ -62,7 +64,7 @@ client.on("messageCreate", async message => {
         let args = message.content.split(" ");
 
         // The Channel, will take the current channel if no channel is mentioned
-        let target = message.mention.channels.first() || guild.channel.cache.get(args[1]) || channel;
+        let target = message.mentions.channels.first() || guild.channels.cache.get(args[1]) || channel;
 
         // return if there's no channel, mostly won't happen
         if (!target) return returnMsg("يرجى منشن روم لتعيينه\n\n" + helpText);
@@ -88,7 +90,7 @@ client.on("messageCreate", async message => {
 
         returnMsg(`سيتم إرسال الأذكار إلى ${target}`)
 
-    } else if (message.content.startsWith("stop-azkar")) {
+    } else if (message.content.startsWith(prefix + "stop-azkar")) {
         let { channel, guild, member } = message;
         
         // the config file
@@ -111,7 +113,7 @@ client.on("messageCreate", async message => {
         let args = message.content.split(" ");
 
         // The Channel, will take the current channel if no channel is mentioned
-        let target = message.mention.channels.first() || guild.channel.cache.get(args[1]) || channel;
+        let target = message.mentions.channels.first() || guild.channels.cache.get(args[1]) || channel;
 
         // return if there's no channel, mostly won't happen
         if (!target) return returnMsg("يرجى منشن الروم المراد إزالته\n\n" + helpText);
